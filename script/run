@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Exit the script if any command fails
+set -e
+
+echo "🔄 Starting Stream Deck plugin in watch mode..."
+echo "   (Press Ctrl+C to stop)"
+echo ""
+
+npm run watch
+
+echo "✅ Watch mode stopped."

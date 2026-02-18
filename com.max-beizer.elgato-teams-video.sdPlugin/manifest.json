@@ -1,0 +1,137 @@
+{
+	"Name": "elgato-teams-video",
+	"Version": "0.1.0.0",
+	"Author": "max beizer",
+	"Actions": [
+		{
+			"Name": "Teams Mute Toggle",
+			"UUID": "com.max-beizer.elgato-teams-video.teams-mute-toggle",
+			"Icon": "imgs/actions/teams-mute-toggle/icon",
+			"Tooltip": "Toggle mute status in Microsoft Teams meetings",
+			"PropertyInspectorPath": "ui/teams-mute-toggle.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/teams-mute-toggle/key_0",
+					"Name": "Muted",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/teams-mute-toggle/key_1",
+					"Name": "Unmuted",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Teams Video Toggle",
+			"UUID": "com.max-beizer.elgato-teams-video.teams-video-toggle",
+			"Icon": "imgs/actions/teams-video-toggle/icon",
+			"Tooltip": "Toggle video/camera status in Microsoft Teams meetings",
+			"PropertyInspectorPath": "ui/teams-video-toggle.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/teams-video-toggle/key_0",
+					"Name": "Video Off",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/teams-video-toggle/key_1",
+					"Name": "Video On",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Teams Screen Share",
+			"UUID": "com.max-beizer.elgato-teams-video.teams-share-screen",
+			"Icon": "imgs/actions/teams-share-screen/icon",
+			"Tooltip": "Start or stop screen sharing in Microsoft Teams meetings",
+			"PropertyInspectorPath": "ui/teams-share-screen.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/teams-share-screen/key_0",
+					"Name": "Not Sharing",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/teams-share-screen/key_1",
+					"Name": "Sharing",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Teams Focus",
+			"UUID": "com.max-beizer.elgato-teams-video.teams-focus",
+			"Icon": "imgs/actions/teams-focus/icon",
+			"Tooltip": "Bring Microsoft Teams to the foreground",
+			"PropertyInspectorPath": "ui/teams-focus.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/teams-focus/key_0",
+					"Name": "Focus Teams",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/teams-focus/key_1",
+					"Name": "No Teams",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Teams Leave Meeting",
+			"UUID": "com.max-beizer.elgato-teams-video.teams-leave-meeting",
+			"Icon": "imgs/actions/teams-leave-meeting/icon",
+			"Tooltip": "Leave the current Microsoft Teams meeting",
+			"PropertyInspectorPath": "ui/teams-leave-meeting.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/teams-leave-meeting/key_0",
+					"Name": "In Meeting",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/teams-leave-meeting/key_1",
+					"Name": "No Meeting",
+					"TitleAlignment": "middle"
+				}
+			]
+		}
+	],
+	"Category": "elgato-teams-video",
+	"CategoryIcon": "imgs/plugin/category-icon",
+	"CodePath": "bin/plugin.js",
+	"Description": "Microsoft Teams meeting controls for Stream Deck",
+	"Icon": "imgs/plugin/marketplace",
+	"SDKVersion": 2,
+	"Software": {
+		"MinimumVersion": "6.4"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		}
+	],
+	"Nodejs": {
+		"Version": "20",
+		"Debug": "enabled"
+	},
+	"UUID": "com.max-beizer.elgato-teams-video"
+}

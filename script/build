@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Exit the script if any command fails
+set -e
+
+echo "🎨 Converting SVG icons to PNG..."
+"$(dirname "$0")/convert-icons"
+
+echo "📦 Building the Stream Deck plugin..."
+npm run build
+
+echo "🔄 Restarting the Stream Deck plugin..."
+npx streamdeck restart com.max-beizer.elgato-teams-video
+
+echo "✅ Plugin built and restarted successfully!"
