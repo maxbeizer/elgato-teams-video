@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <rect width="72" height="72" rx="8" fill="#1a1a2e"/>
+  <!-- Monitor -->
+  <rect x="10" y="14" width="52" height="32" rx="3" fill="none" stroke="#4CAF50" stroke-width="3"/>
+  <!-- Arrow pointing up (share active) -->
+  <polygon points="36,20 28,30 44,30" fill="#4CAF50"/>
+  <rect x="33" y="28" width="6" height="10" fill="#4CAF50"/>
+  <!-- Stand -->
+  <line x1="36" y1="46" x2="36" y2="56" stroke="#4CAF50" stroke-width="3" stroke-linecap="round"/>
+  <line x1="26" y1="56" x2="46" y2="56" stroke="#4CAF50" stroke-width="3" stroke-linecap="round"/>
+  <!-- Green dot indicator -->
+  <circle cx="56" cy="18" r="5" fill="#4CAF50"/>
+</svg>

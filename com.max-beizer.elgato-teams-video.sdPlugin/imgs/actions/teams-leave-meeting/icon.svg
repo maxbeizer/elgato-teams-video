@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+  <rect width="20" height="20" rx="3" fill="#6264A7"/>
+  <!-- Phone/hangup icon -->
+  <path d="M4 10 Q4 6 10 6 Q16 6 16 10 L14 12 L12 10 L8 10 L6 12 Z" fill="white"/>
+</svg>
