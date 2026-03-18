@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <rect width="72" height="72" rx="8" fill="#1a1a2e"/>
+  <!-- Teams purple rounded square -->
+  <rect x="16" y="16" width="40" height="40" rx="8" fill="#6264A7"/>
+  <!-- "T" letter -->
+  <text x="36" y="46" font-family="Arial,sans-serif" font-size="30" font-weight="bold" fill="white" text-anchor="middle">T</text>
+</svg>

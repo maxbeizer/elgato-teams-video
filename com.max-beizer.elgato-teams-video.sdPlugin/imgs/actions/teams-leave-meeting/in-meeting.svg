@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <rect width="72" height="72" rx="8" fill="#1a1a2e"/>
+  <!-- Phone hangup icon (rotated handset) -->
+  <path d="M16 36 Q16 24 36 24 Q56 24 56 36 L50 42 L44 36 L28 36 L22 42 Z" fill="#E74C3C"/>
+  <!-- Down arrow -->
+  <polygon points="36,48 28,42 44,42" fill="#E74C3C"/>
+</svg>

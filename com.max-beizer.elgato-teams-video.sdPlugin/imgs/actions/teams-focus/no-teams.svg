@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <rect width="72" height="72" rx="8" fill="#1a1a2e"/>
+  <!-- Teams grey rounded square (inactive) -->
+  <rect x="16" y="16" width="40" height="40" rx="8" fill="#555"/>
+  <!-- "T" letter -->
+  <text x="36" y="46" font-family="Arial,sans-serif" font-size="30" font-weight="bold" fill="#999" text-anchor="middle">T</text>
+  <!-- X mark -->
+  <line x1="46" y1="18" x2="58" y2="30" stroke="#E74C3C" stroke-width="3" stroke-linecap="round"/>
+  <line x1="58" y1="18" x2="46" y2="30" stroke="#E74C3C" stroke-width="3" stroke-linecap="round"/>
+</svg>

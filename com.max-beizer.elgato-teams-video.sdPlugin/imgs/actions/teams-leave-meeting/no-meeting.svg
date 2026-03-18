@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <rect width="72" height="72" rx="8" fill="#1a1a2e"/>
+  <!-- Phone hangup icon (greyed out) -->
+  <path d="M16 36 Q16 24 36 24 Q56 24 56 36 L50 42 L44 36 L28 36 L22 42 Z" fill="#555"/>
+  <!-- Dash/minus (no meeting) -->
+  <line x1="28" y1="50" x2="44" y2="50" stroke="#555" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+
+# research-teams-menu-bar — Investigate Teams menu bar accessibility via AppleScript
+# Related: https://github.com/maxbeizer/elgato-teams-video/issues/2
+#
+# Run this script while Microsoft Teams is open (ideally in a meeting).
+# It will detect the Teams process name and attempt to enumerate menu bar items.
+
+set -e
+
+echo "========================================"
+echo "Teams Menu Bar Accessibility Research"
+echo "========================================"
+echo ""
+
+# --- Step 1: Detect Teams process name ---
+echo "--- Step 1: Detecting Teams process name ---"
+
+TEAMS_PROCESS=""
+for name in "Microsoft Teams" "MSTeams" "Microsoft Teams (work or school)"; do
+  result=$(osascript -e "
+    tell application \"System Events\"
+      if exists (process \"$name\") then
+        return \"found\"
+      end if
+    end tell
+    return \"not_found\"
+  " 2>/dev/null || echo "error")
+
+  if [ "$result" = "found" ]; then
+    TEAMS_PROCESS="$name"
+    echo "✅ Found Teams process: \"$name\""
+    break
+  else
+    echo "   ❌ Not found: \"$name\""
+  fi
+done
+
+if [ -z "$TEAMS_PROCESS" ]; then
+  echo ""
+  echo "🔴 Microsoft Teams is not running. Please start Teams and try again."
+  echo "   If Teams IS running, its process name may differ from the known names."
+  echo ""
+  echo "   Attempting to find any Teams-like process..."
+  osascript -e '
+    tell application "System Events"
+      set allProcs to name of every process
+      set teamsList to {}
+      repeat with p in allProcs
+        if p contains "Teams" or p contains "teams" or p contains "MSTeams" then
+          set end of teamsList to p as text
+        end if
+      end repeat
+      return teamsList
+    end tell
+  ' 2>/dev/null || echo "   Could not enumerate processes."
+  exit 1
+fi
+
+echo ""
+
+# --- Step 2: Get process info ---
+echo "--- Step 2: Process details ---"
+osascript -e "
+  tell application \"System Events\"
+    tell process \"$TEAMS_PROCESS\"
+      set procInfo to {\"Bundle ID: \" & bundle identifier, \"Title: \" & title}
+      return procInfo
+    end tell
+  end tell
+" 2>/dev/null || echo "   Could not get process details."
+echo ""
+
+# --- Step 3: Enumerate menu bar items ---
+echo "--- Step 3: Enumerating menu bar items ---"
+osascript -e "
+  tell application \"System Events\"
+    tell process \"$TEAMS_PROCESS\"
+      try
+        set menuBarCount to count of menu bars
+        log \"Menu bar count: \" & menuBarCount
+
+        if menuBarCount > 0 then
+          set menuNames to name of every menu bar item of menu bar 1
+          return menuNames
+        else
+          return \"No menu bars found\"
+        end if
+      on error errMsg
+        return \"Error accessing menu bar: \" & errMsg
+      end try
+    end tell
+  end tell
+" 2>/dev/null || echo "   ⚠️  Could not access menu bar items (this may indicate no accessibility)"
+echo ""
+
+# --- Step 4: Deep dive into each menu ---
+echo "--- Step 4: Deep dive into menu items ---"
+echo "(Looking for mute/video/share state indicators)"
+echo ""
+osascript -e "
+  tell application \"System Events\"
+    tell process \"$TEAMS_PROCESS\"
+      try
+        set menuBarItems to every menu bar item of menu bar 1
+        set output to \"\"
+
+        repeat with menuItem in menuBarItems
+          set menuName to name of menuItem
+          set output to output & \"📂 Menu: \" & menuName & return
+
+          try
+            set subItems to name of every menu item of menu 1 of menuItem
+            repeat with subItem in subItems
+              set output to output & \"   ├─ \" & subItem & return
+            end repeat
+          on error
+            set output to output & \"   └─ (could not read sub-items)\" & return
+          end try
+        end repeat
+
+        return output
+      on error errMsg
+        return \"Error: \" & errMsg
+      end try
+    end tell
+  end tell
+" 2>/dev/null || echo "   ⚠️  Could not enumerate menu contents"
+echo ""
+
+# --- Step 5: Check for accessibility API attributes ---
+echo "--- Step 5: Checking AXRole and accessibility attributes ---"
+osascript -e "
+  tell application \"System Events\"
+    tell process \"$TEAMS_PROCESS\"
+      try
+        set winCount to count of windows
+        set output to \"Windows: \" & winCount & return
+
+        if winCount > 0 then
+          set win1 to window 1
+          set output to output & \"Window 1 title: \" & (name of win1) & return
+          set output to output & \"Window 1 role: \" & (role of win1) & return
+
+          try
+            set uiElements to every UI element of win1
+            set output to output & \"UI elements in window: \" & (count of uiElements) & return
+          on error
+            set output to output & \"Could not enumerate UI elements\" & return
+          end try
+        end if
+
+        return output
+      on error errMsg
+        return \"Error: \" & errMsg
+      end try
+    end tell
+  end tell
+" 2>/dev/null || echo "   ⚠️  Could not check accessibility attributes"
+echo ""
+
+# --- Step 6: Check status menu (system tray) ---
+echo "--- Step 6: Checking system tray / status menu items ---"
+osascript -e "
+  tell application \"System Events\"
+    tell process \"$TEAMS_PROCESS\"
+      try
+        set menuBarCount to count of menu bars
+        if menuBarCount > 1 then
+          set statusItems to name of every menu bar item of menu bar 2
+          return \"Status bar items: \" & statusItems
+        else
+          return \"No status bar menu (menu bar 2) found\"
+        end if
+      on error errMsg
+        return \"Error checking status menu: \" & errMsg
+      end try
+    end tell
+  end tell
+" 2>/dev/null || echo "   ⚠️  Could not check status menu"
+echo ""
+
+echo "========================================"
+echo "Research complete!"
+echo ""
+echo "📋 Summary of findings:"
+echo "   Process name: ${TEAMS_PROCESS}"
+echo ""
+echo "Next steps:"
+echo "  - If menu bar items were found, document the item names for each meeting state"
+echo "  - If NOT accessible, the plugin will rely on optimistic state tracking"
+echo "  - Post findings as a comment on issue #2"
+echo "========================================"
