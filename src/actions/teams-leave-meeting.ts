@@ -2,9 +2,10 @@
  * Teams Leave Meeting Action
  *
  * Leaves the current Microsoft Teams meeting.
- * Uses keyboard shortcut ⇧⌘B (Shift+Command+B).
- * Employs optimistic state tracking since Teams may not expose
- * menu bar items to AppleScript.
+ * Uses keyboard shortcut ⇧⌘H (Shift+Command+H).
+ * Teams does not expose meeting status to AppleScript, so the button
+ * always shows "Leave" while Teams is running rather than guessing
+ * whether a meeting is in progress.
  *
  * @see .github/copilot-instructions.md for development guidelines
  */
@@ -18,23 +19,17 @@ import { isTeamsRunning, sendTeamsKeystroke } from "../teams-utils";
 
 /**
  * Action that leaves the current Teams meeting.
- * Uses optimistic state tracking.
+ * State 0 (red hang-up) when Teams is running, state 1 (grey) when it is not.
  */
 @action({ UUID: "com.max-beizer.elgato-teams-video.teams-leave-meeting" })
 export class TeamsLeaveMeeting extends SingletonAction<TeamsLeaveMeetingSettings> {
-  /** Optimistic meeting state: true = in meeting */
-  private inMeeting = false;
-
   override async onWillAppear(
     ev: WillAppearEvent<TeamsLeaveMeetingSettings>
   ): Promise<void> {
-    // Default to assuming no meeting when action first appears
-    this.inMeeting = false;
-
     if (isTeamsRunning()) {
-      await ev.action.setTitle("No Meeting");
+      await ev.action.setTitle("Leave");
       if ("setState" in ev.action) {
-        await ev.action.setState(1);
+        await ev.action.setState(0);
       }
     } else {
       await ev.action.setTitle("No Teams");
@@ -57,15 +52,13 @@ export class TeamsLeaveMeeting extends SingletonAction<TeamsLeaveMeetingSettings
       }
 
       // Send leave meeting shortcut
-      sendTeamsKeystroke("b");
+      sendTeamsKeystroke("h");
 
-      // After leaving, assume we're no longer in a meeting
-      this.inMeeting = false;
-
+      // Manifest sets DisableAutomaticStates, so the button stays on state 0
       if ("setState" in ev.action) {
-        await ev.action.setState(1);
+        await ev.action.setState(0);
       }
-      await ev.action.setTitle("No Meeting");
+      await ev.action.setTitle("Leave");
     } catch (error) {
       console.error("Error leaving Teams meeting:", error);
       await ev.action.setTitle("Error");

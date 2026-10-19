@@ -93,6 +93,18 @@ convert_icons() {
         magick "$BASE_DIR/$action_dir/no-meeting.svg" -resize 144x144 "$BASE_DIR/$action_dir/key_1@2x.png"
       fi
       ;;
+    "teams-chat-toggle")
+      if [ -f "$BASE_DIR/$action_dir/chat.svg" ]; then
+        echo "  Converting chat.svg to key_0.png"
+        magick "$BASE_DIR/$action_dir/chat.svg" -resize 72x72 "$BASE_DIR/$action_dir/key_0.png"
+        magick "$BASE_DIR/$action_dir/chat.svg" -resize 144x144 "$BASE_DIR/$action_dir/key_0@2x.png"
+      fi
+      if [ -f "$BASE_DIR/$action_dir/no-teams.svg" ]; then
+        echo "  Converting no-teams.svg to key_1.png"
+        magick "$BASE_DIR/$action_dir/no-teams.svg" -resize 72x72 "$BASE_DIR/$action_dir/key_1.png"
+        magick "$BASE_DIR/$action_dir/no-teams.svg" -resize 144x144 "$BASE_DIR/$action_dir/key_1@2x.png"
+      fi
+      ;;
   esac
 }
 

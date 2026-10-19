@@ -16,12 +16,12 @@
 				{
 					"Image": "imgs/actions/teams-mute-toggle/key_0",
 					"Name": "Muted",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				},
 				{
 					"Image": "imgs/actions/teams-mute-toggle/key_1",
 					"Name": "Unmuted",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				}
 			]
 		},
@@ -38,12 +38,12 @@
 				{
 					"Image": "imgs/actions/teams-video-toggle/key_0",
 					"Name": "Video Off",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				},
 				{
 					"Image": "imgs/actions/teams-video-toggle/key_1",
 					"Name": "Video On",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				}
 			]
 		},
@@ -60,12 +60,12 @@
 				{
 					"Image": "imgs/actions/teams-share-screen/key_0",
 					"Name": "Not Sharing",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				},
 				{
 					"Image": "imgs/actions/teams-share-screen/key_1",
 					"Name": "Sharing",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				}
 			]
 		},
@@ -82,12 +82,12 @@
 				{
 					"Image": "imgs/actions/teams-focus/key_0",
 					"Name": "Focus Teams",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				},
 				{
 					"Image": "imgs/actions/teams-focus/key_1",
 					"Name": "No Teams",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				}
 			]
 		},
@@ -95,6 +95,7 @@
 			"Name": "Teams Leave Meeting",
 			"UUID": "com.max-beizer.elgato-teams-video.teams-leave-meeting",
 			"Icon": "imgs/actions/teams-leave-meeting/icon",
+			"DisableAutomaticStates": true,
 			"Tooltip": "Leave the current Microsoft Teams meeting",
 			"PropertyInspectorPath": "ui/teams-leave-meeting.html",
 			"Controllers": [
@@ -104,12 +105,35 @@
 				{
 					"Image": "imgs/actions/teams-leave-meeting/key_0",
 					"Name": "In Meeting",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
 				},
 				{
 					"Image": "imgs/actions/teams-leave-meeting/key_1",
 					"Name": "No Meeting",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Teams Chat Toggle",
+			"UUID": "com.max-beizer.elgato-teams-video.teams-chat-toggle",
+			"Icon": "imgs/actions/teams-chat-toggle/icon",
+			"DisableAutomaticStates": true,
+			"Tooltip": "Show or hide the chat in the current Microsoft Teams meeting",
+			"PropertyInspectorPath": "ui/teams-chat-toggle.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/teams-chat-toggle/key_0",
+					"Name": "Chat",
+					"TitleAlignment": "bottom"
+				},
+				{
+					"Image": "imgs/actions/teams-chat-toggle/key_1",
+					"Name": "No Teams",
+					"TitleAlignment": "bottom"
 				}
 			]
 		}

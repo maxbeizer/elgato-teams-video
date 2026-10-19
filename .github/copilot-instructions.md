@@ -9,6 +9,7 @@ elgato-teams-video is a Stream Deck plugin that provides Microsoft Teams meeting
 3. Teams Screen Share — Start/stop screen sharing in Teams even when another application is focused
 4. Teams Focus — Bring the Teams application to the foreground instantly
 5. Teams Leave Meeting — Leave the current Teams meeting even when another application is focused
+6. Teams Chat Toggle — Show or hide the meeting chat pane by clicking the meeting window's Chat button (no keyboard shortcut exists)
 
 ## Key Technologies
 
@@ -28,7 +29,8 @@ elgato-teams-video is a Stream Deck plugin that provides Microsoft Teams meeting
     - **teams-video-toggle.ts**: Video control (⇧⌘O)
     - **teams-share-screen.ts**: Screen sharing control (⇧⌘E)
     - **teams-focus.ts**: Focus Teams
-    - **teams-leave-meeting.ts**: Leave meeting (⇧⌘B)
+    - **teams-leave-meeting.ts**: Leave meeting (⇧⌘H)
+    - **teams-chat-toggle.ts**: Meeting chat toggle (macOS accessibility API via JXA in `toggleMeetingChat()`)
 
 - **com.max-beizer.elgato-teams-video.sdPlugin/**: Compiled plugin
 
@@ -90,7 +92,7 @@ The plugin follows these conventions for icons:
 | Mute Toggle  | ⇧⌘M     | `"m"`       |
 | Video Toggle | ⇧⌘O     | `"o"`       |
 | Screen Share | ⇧⌘E     | `"e"`       |
-| Leave Meeting| ⇧⌘B     | `"b"`       |
+| Leave Meeting| ⇧⌘H     | `"h"`       |
 
 ## Teams Process Names
 
