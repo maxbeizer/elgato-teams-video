@@ -19,6 +19,7 @@ A Stream Deck plugin providing convenient Microsoft Teams meeting controls direc
 - Microsoft Teams desktop client (with default keyboard shortcuts)
 - Node.js v20+ (for development)
 - ImageMagick (`brew install imagemagick`) for converting the SVG icons
+- Accessibility permission for the Stream Deck app (System Settings → Privacy & Security → Accessibility). macOS asks the first time a button sends a keystroke; Chat Toggle also needs it to find the Chat button
 
 ## Keyboard Shortcuts Used
 
@@ -29,9 +30,9 @@ A Stream Deck plugin providing convenient Microsoft Teams meeting controls direc
 | Screen Share| ⇧⌘E     |
 | Leave Meeting| ⇧⌘H    |
 
-Chat Toggle has no Teams shortcut. It brings the meeting window (the one with a **Leave** button) to the front and presses its **Chat** button through the macOS accessibility API, and leaves Teams in front. Each press writes the buttons it found to `com.max-beizer.elgato-teams-video.sdPlugin/logs/`, which helps if a Teams update renames the button.
-
 > **Note:** These are the default Teams keyboard shortcuts. If you've customized them, the plugin will not work correctly.
+
+Chat Toggle has no Teams shortcut. It brings the meeting window (the one with a **Leave** button) to the front and presses its **Chat** button through the macOS accessibility API, and leaves Teams in front. Each press writes the buttons it found to `com.max-beizer.elgato-teams-video.sdPlugin/logs/`, which helps if a Teams update renames the button.
 
 ## Installation
 
@@ -98,16 +99,33 @@ The plugin uses AppleScript to:
 3. Send keyboard shortcuts to control Teams
 4. Return to the original application
 
-Since Microsoft Teams may not expose menu bar items to AppleScript's `System Events`, this plugin uses **optimistic state tracking** — it assumes each button press toggles the state and tracks it in-plugin. State resets to defaults when the Stream Deck profile loads.
+Chat Toggle has no shortcut to send. Instead it uses a JavaScript for Automation (JXA) script that walks the Teams window through the macOS accessibility API, finds the meeting window's **Chat** button, and presses it. It runs in the background with a 10-second limit so a slow Teams window can't freeze the plugin. (AppleScript's `entire contents` was tried first and took over 50 seconds.)
+
+Teams doesn't report meeting, mute, video or sharing status to AppleScript, so:
+
+- **Mute, Video and Screen Share** use **optimistic state tracking**: each press is assumed to toggle the state, which is tracked in the plugin. State resets to defaults when the Stream Deck profile loads.
+- **Leave Meeting** always shows **Leave** while Teams is running, rather than guessing whether a meeting is in progress.
 
 > **Caveat:** If you toggle mute/video/share directly in Teams (not via Stream Deck), the button state may drift out of sync. Reloading the Stream Deck profile will reset all states.
+
+Teams' Third-party app API (Settings → Privacy) could report real meeting status, but organizations can hide that setting, so the plugin does not rely on it.
+
+## Troubleshooting
+
+- **A change doesn't show up after building:** `npx streamdeck restart` (run by `./script/build`) occasionally does nothing. Stop the plugin process and Stream Deck relaunches it with the new build:
+  ```sh
+  pkill -f com.max-beizer.elgato-teams-video.sdPlugin/bin/plugin.js
+  ```
+- **Changes to `manifest.json`** (new actions, states, title alignment) only take effect after quitting and reopening the Stream Deck app.
+- **A button's title is in the wrong place:** titles default to the bottom of the key, but alignment changed for a key in the Stream Deck app is saved for that key and overrides the manifest. Reset it in the key's title settings, or remove the key and add the action again.
+- **Logs** are written to `com.max-beizer.elgato-teams-video.sdPlugin/logs/` (newest is `.0.log`) and to Stream Deck's own log at `~/Library/Logs/ElgatoStreamDeck/StreamDeck.log`.
 
 ## Project Structure
 
 ```
 src/
   plugin.ts                    # Entry point — registers all actions
-  teams-utils.ts               # Shared Teams process detection & AppleScript helpers
+  teams-utils.ts               # Shared Teams process detection, AppleScript & accessibility helpers
   actions/
     teams-mute-toggle.ts       # Mute toggle implementation
     teams-video-toggle.ts      # Video toggle implementation
