@@ -96,7 +96,7 @@ export function sendTeamsKeystroke(
 export interface MeetingChatResult {
   /** "clicked", "found", "no_teams", "no_meeting", "no_chat", "ambiguous" or "error" */
   status: string;
-  /** Diagnostic lines describing the windows and buttons that were inspected */
+  /** Sanitized diagnostic lines describing the accessibility search */
   details: string[];
 }
 
@@ -105,13 +105,14 @@ export interface MeetingChatResult {
  * accessibility API. Calling the API directly is far faster than iterating
  * AppleScript "entire contents", which takes minutes on the Teams web view.
  */
-function meetingChatScript(pid: number, press: boolean): string {
+function meetingChatScript(pid: number, press: boolean, debug: boolean): string {
   return `
     ObjC.import("ApplicationServices");
     ObjC.import("AppKit");
 
     const PID = ${pid};
     const PRESS = ${press};
+    const DEBUG = ${debug};
     const MAX_NODES = 20000;
     const BUTTON_ROLES = ["AXButton", "AXCheckBox", "AXRadioButton", "AXMenuButton", "AXPopUpButton", "AXTab"];
 
@@ -153,29 +154,41 @@ function meetingChatScript(pid: number, press: boolean): string {
       const windows = children(app).filter((el) => str(el, "AXRole") === "AXWindow");
       let meeting = null;
 
-      for (const win of windows) {
-        const title = str(win, "AXTitle");
+      for (let windowIndex = 0; windowIndex < windows.length; windowIndex++) {
+        const win = windows[windowIndex];
         const queue = [win];
         const chats = [];
         let hasLeave = false;
         let visited = 0;
+        let controls = 0;
 
         while (queue.length && visited < MAX_NODES) {
           const el = queue.shift();
           visited++;
           const role = str(el, "AXRole");
           if (BUTTON_ROLES.indexOf(role) !== -1) {
+            controls++;
             const label = str(el, "AXTitle") || str(el, "AXDescription");
-            out.push("BUTTON|" + title + "|" + role + "|" + label + "|" + str(el, "AXHelp"));
-            if (/^Leave/i.test(label)) hasLeave = true;
-            if (/^(Chat|Show conversation|Open chat)\\b/i.test(label)) chats.push(el);
+            if (DEBUG) {
+              out.push("BUTTON|window=" + windowIndex + "|role=" + role + "|label=" + label + "|help=" + str(el, "AXHelp"));
+            }
+            if (/^Leave/i.test(label)) {
+              hasLeave = true;
+              out.push("MATCH|window=" + windowIndex + "|control=leave|role=" + role);
+            }
+            if (/^(Chat|Show conversation|Open chat)\\b/i.test(label)) {
+              chats.push(el);
+              out.push("MATCH|window=" + windowIndex + "|control=chat|role=" + role);
+            }
           }
           for (const child of children(el)) queue.push(child);
         }
 
-        out.push("WINDOW|" + title + "|nodes=" + visited + "|leave=" + hasLeave + "|chat=" + chats.length);
-        if (hasLeave && !meeting) meeting = { win: win, chats: chats };
+        out.push("WINDOW|index=" + windowIndex + "|nodes=" + visited + "|controls=" + controls + "|leave=" + hasLeave + "|chat=" + chats.length);
+        if (hasLeave && !meeting) meeting = { win: win, chats: chats, index: windowIndex };
       }
+
+      out.push("SUMMARY|windows=" + windows.length + "|meeting=" + (meeting ? meeting.index : "none") + "|chat=" + (meeting ? meeting.chats.length : 0));
 
       out.push("ELAPSED|" + (Date.now() - start) + "ms");
 
@@ -232,8 +245,12 @@ function runJxa(script: string, timeoutMs: number): Promise<string> {
  * window. Teams stays in front afterwards so the chat pane can be read.
  *
  * @param press - When false, only reports what was found (read-only probe)
+ * @param debug - Include button labels and help text for explicit diagnostic use
  */
-export async function toggleMeetingChat(press = true): Promise<MeetingChatResult> {
+export async function toggleMeetingChat(
+  press = true,
+  debug = false
+): Promise<MeetingChatResult> {
   const pid = detectTeamsPid();
 
   if (pid === null) {
@@ -241,7 +258,7 @@ export async function toggleMeetingChat(press = true): Promise<MeetingChatResult
   }
 
   try {
-    const output = await runJxa(meetingChatScript(pid, press), 10000);
+    const output = await runJxa(meetingChatScript(pid, press, debug), 10000);
     const lines = output.split("\n");
     const resultLine = lines.find((line) => line.startsWith("RESULT|"));
 
