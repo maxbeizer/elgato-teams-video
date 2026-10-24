@@ -11,6 +11,7 @@
  * to Teams while preserving the user's current application focus.
  */
 import { execSync, spawn } from "child_process";
+import { createAccessibilityMatchers } from "./teams-accessibility";
 
 /** Possible Teams process names, checked in order */
 const TEAMS_PROCESS_NAMES = [
@@ -116,6 +117,8 @@ export interface MeetingChatResult {
  * AppleScript "entire contents", which takes minutes on the Teams web view.
  */
 function meetingChatScript(pid: number, press: boolean, debug: boolean): string {
+  const matchers = createAccessibilityMatchers();
+
   return `
     ObjC.import("ApplicationServices");
     ObjC.import("AppKit");
@@ -125,6 +128,10 @@ function meetingChatScript(pid: number, press: boolean, debug: boolean): string 
     const DEBUG = ${debug};
     const MAX_NODES = 20000;
     const BUTTON_ROLES = ["AXButton", "AXCheckBox", "AXRadioButton", "AXMenuButton", "AXPopUpButton", "AXTab"];
+    const CHAT_IDENTIFIER = new RegExp(${JSON.stringify(matchers.chatIdentifier.source)}, ${JSON.stringify(matchers.chatIdentifier.flags)});
+    const LEAVE_IDENTIFIER = new RegExp(${JSON.stringify(matchers.leaveIdentifier.source)}, ${JSON.stringify(matchers.leaveIdentifier.flags)});
+    const CHAT_LABEL = new RegExp(${JSON.stringify(matchers.chatLabel.source)}, ${JSON.stringify(matchers.chatLabel.flags)});
+    const LEAVE_LABEL = new RegExp(${JSON.stringify(matchers.leaveLabel.source)}, ${JSON.stringify(matchers.leaveLabel.flags)});
 
     function attr(el, name) {
       const ref = Ref();
@@ -181,14 +188,15 @@ function meetingChatScript(pid: number, press: boolean, debug: boolean): string 
           if (BUTTON_ROLES.indexOf(role) !== -1) {
             controls++;
             const label = str(el, "AXTitle") || str(el, "AXDescription");
+            const identifier = str(el, "AXIdentifier") || str(el, "AXDOMIdentifier");
             if (DEBUG) {
-              out.push("BUTTON|window=" + windowIndex + "|role=" + role + "|label=" + label + "|help=" + str(el, "AXHelp"));
+              out.push("BUTTON|window=" + windowIndex + "|role=" + role + "|label=" + label + "|help=" + str(el, "AXHelp") + "|id=" + identifier);
             }
-            if (/^Leave/i.test(label)) {
+            if (LEAVE_IDENTIFIER.test(identifier) || LEAVE_LABEL.test(label)) {
               hasLeave = true;
               out.push("MATCH|window=" + windowIndex + "|control=leave|role=" + role);
             }
-            if (/^(Chat|Show conversation|Open chat)\\b/i.test(label)) {
+            if (CHAT_IDENTIFIER.test(identifier) || CHAT_LABEL.test(label)) {
               chats.push(el);
               out.push("MATCH|window=" + windowIndex + "|control=chat|role=" + role);
             }
@@ -252,9 +260,10 @@ function runJxa(script: string, timeoutMs: number): Promise<string> {
  * Toggle the chat pane of the current Teams meeting.
  *
  * Teams has no keyboard shortcut for this, so the script uses the macOS
- * accessibility API: it finds the meeting window (the one containing a
- * "Leave" button), raises it, and presses the button labelled "Chat" in that
- * window. Teams stays in front afterwards so the chat pane can be read.
+ * accessibility API: it finds the meeting window and Chat control using stable
+ * accessibility/DOM identifiers where Teams exposes them, then falls back to
+ * configurable localized labels. Teams stays in front afterwards so the chat
+ * pane can be read.
  *
  * @param press - When false, only reports what was found (read-only probe)
  * @param debug - Include button labels and help text for explicit diagnostic use

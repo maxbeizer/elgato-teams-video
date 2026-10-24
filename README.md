@@ -32,7 +32,19 @@ A Stream Deck plugin providing convenient Microsoft Teams meeting controls direc
 
 > **Note:** These are the default Teams keyboard shortcuts. If you've customized them, the plugin will not work correctly.
 
-Chat Toggle has no Teams shortcut. It brings the meeting window (the one with a **Leave** button) to the front and presses its **Chat** button through the macOS accessibility API, and leaves Teams in front. Each press writes the buttons it found to `com.max-beizer.elgato-teams-video.sdPlugin/logs/`, which helps if a Teams update renames the button.
+Chat Toggle has no Teams shortcut. It brings the meeting window to the front and presses its chat control through the macOS accessibility API, and leaves Teams in front. It prefers Teams' language-neutral accessibility/DOM identifiers, so localized labels normally do not matter. Each press writes sanitized search summaries to `com.max-beizer.elgato-teams-video.sdPlugin/logs/`, which helps diagnose Teams accessibility changes without recording window titles or control labels.
+
+If a Teams version does not expose stable identifiers, configure its localized fallback labels before Stream Deck starts. Values are comma-separated and matched from the start of the accessibility label:
+
+Quit Stream Deck first, then launch it with the variables:
+
+```sh
+open --env 'TEAMS_CHAT_LABELS=Unterhaltung anzeigen,Chat öffnen' \
+  --env 'TEAMS_LEAVE_LABELS=Verlassen' \
+  -a "Elgato Stream Deck"
+```
+
+English labels are the default fallback. The remaining limitation is that an unrecognized localized label cannot be identified when Teams supplies no stable identifier. For detailed troubleshooting, quit Stream Deck and relaunch it with `open --env ELGATO_TEAMS_CHAT_DEBUG=1 -a "Elgato Stream Deck"`; the log's `BUTTON` lines will then include control labels, help text, and identifiers. Those diagnostics may contain meeting information, so enable them only temporarily.
 
 ## Installation
 
@@ -99,7 +111,7 @@ The plugin uses AppleScript to:
 3. Send keyboard shortcuts to control Teams
 4. Return to the original application
 
-Chat Toggle has no shortcut to send. Instead it uses a JavaScript for Automation (JXA) script that walks the Teams window through the macOS accessibility API, finds the meeting window's **Chat** button, and presses it. It runs in the background with a 10-second limit so a slow Teams window can't freeze the plugin. (AppleScript's `entire contents` was tried first and took over 50 seconds.)
+Chat Toggle has no shortcut to send. Instead it uses a JavaScript for Automation (JXA) script that walks the Teams window through the macOS accessibility API, identifies the meeting and chat controls by `AXIdentifier`/`AXDOMIdentifier` when available, and presses the chat control. Configurable accessibility-label matching is the fallback. It runs in the background with a 10-second limit so a slow Teams window can't freeze the plugin. (AppleScript's `entire contents` was tried first and took over 50 seconds.)
 
 Teams doesn't report meeting, mute, video or sharing status to AppleScript, so:
 
