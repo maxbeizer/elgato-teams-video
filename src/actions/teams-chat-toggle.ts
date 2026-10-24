@@ -15,6 +15,8 @@ import streamDeck, {
 } from "@elgato/streamdeck";
 import { isTeamsRunning, toggleMeetingChat } from "../teams-utils";
 
+const accessibilityDebug = process.env.ELGATO_TEAMS_CHAT_DEBUG === "1";
+
 /**
  * Action that toggles the meeting chat pane.
  * State 0 when Teams is running, state 1 (grey) when it is not.
@@ -36,7 +38,7 @@ export class TeamsChatToggle extends SingletonAction<TeamsChatToggleSettings> {
   ): Promise<void> {
     try {
       const started = Date.now();
-      const result = await toggleMeetingChat();
+      const result = await toggleMeetingChat(true, accessibilityDebug);
 
       streamDeck.logger.info(
         `Chat toggle: ${result.status} in ${Date.now() - started}ms`
@@ -50,6 +52,12 @@ export class TeamsChatToggle extends SingletonAction<TeamsChatToggleSettings> {
         if ("setState" in ev.action) {
           await ev.action.setState(1);
         }
+        return;
+      }
+
+      if (result.status === "permission_denied") {
+        await ev.action.setTitle("Allow\nAccessibility");
+        await ev.action.showAlert();
         return;
       }
 

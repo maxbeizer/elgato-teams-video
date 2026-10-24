@@ -19,7 +19,7 @@ A Stream Deck plugin providing convenient Microsoft Teams meeting controls direc
 - Microsoft Teams desktop client (with default keyboard shortcuts)
 - Node.js v20+ (for development)
 - ImageMagick (`brew install imagemagick`) for converting the SVG icons
-- Accessibility permission for the Stream Deck app (System Settings → Privacy & Security → Accessibility). macOS asks the first time a button sends a keystroke; Chat Toggle also needs it to find the Chat button
+- Accessibility permission for the Stream Deck app. Open **System Settings → Privacy & Security → Accessibility** and enable **Stream Deck**. macOS may prompt the first time a button sends a keystroke; Chat Toggle also needs this permission to find the Chat button.
 
 ## Keyboard Shortcuts Used
 
@@ -122,6 +122,7 @@ Teams' Third-party app API (Settings → Privacy) could report real meeting stat
 
 ## Troubleshooting
 
+- **Chat Toggle displays “Allow Accessibility”:** Open **System Settings → Privacy & Security → Accessibility** and enable **Stream Deck**. If it is already enabled, turn it off and on again, then quit and reopen Stream Deck. The Chat Toggle stops before inspecting Teams when this permission is missing, rather than reporting “No Meeting” or another unrelated status.
 - **A change doesn't show up after building:** `npx streamdeck restart` (run by `./script/build`) occasionally does nothing. Stop the plugin process and Stream Deck relaunches it with the new build:
   ```sh
   pkill -f com.max-beizer.elgato-teams-video.sdPlugin/bin/plugin.js
