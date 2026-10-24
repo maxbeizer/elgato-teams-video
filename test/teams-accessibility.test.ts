@@ -7,7 +7,11 @@ test("matches language-neutral Teams accessibility identifiers", () => {
   const matchers = createAccessibilityMatchers();
 
   assert.match("callingButtons-showConversation", matchers.chatIdentifier);
+  assert.match("meeting-openChat-button", matchers.chatIdentifier);
   assert.match("meeting-hangup-button", matchers.leaveIdentifier);
+  assert.doesNotMatch("chat-pane-close-button", matchers.chatIdentifier);
+  assert.doesNotMatch("conversation-history-item", matchers.chatIdentifier);
+  assert.doesNotMatch("leave-reaction-button", matchers.leaveIdentifier);
 });
 
 test("supports localized label fallback configuration", () => {

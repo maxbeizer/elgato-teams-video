@@ -37,8 +37,10 @@ export function createAccessibilityMatchers(
   leaveLabels = process.env.TEAMS_LEAVE_LABELS
 ): AccessibilityMatchers {
   return {
-    chatIdentifier: /(chat|conversation)/i,
-    leaveIdentifier: /(leave|hangup|end[-_.:]?call)/i,
+    chatIdentifier:
+      /(?:^|[-_.:])(?:show[-_.:]?conversation|open[-_.:]?chat|toggle[-_.:]?chat|chat)(?:[-_.:]?(?:button|control))?$/i,
+    leaveIdentifier:
+      /(?:^|[-_.:])(?:leave|hangup|end[-_.:]?call)(?:[-_.:]?(?:button|control))?$/i,
     chatLabel: labelMatcher(configuredLabels(chatLabels, DEFAULT_CHAT_LABELS)),
     leaveLabel: labelMatcher(configuredLabels(leaveLabels, DEFAULT_LEAVE_LABELS)),
   };
