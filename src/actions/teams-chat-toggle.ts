@@ -55,6 +55,12 @@ export class TeamsChatToggle extends SingletonAction<TeamsChatToggleSettings> {
         return;
       }
 
+      if (result.status === "permission_denied") {
+        await ev.action.setTitle("Allow\nAccessibility");
+        await ev.action.showAlert();
+        return;
+      }
+
       if ("setState" in ev.action) {
         await ev.action.setState(0);
       }
