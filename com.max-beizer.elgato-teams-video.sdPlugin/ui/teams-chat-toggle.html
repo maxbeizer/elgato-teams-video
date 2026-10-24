@@ -29,6 +29,11 @@
       padding: 12px;
     }
 
+    .permission {
+      border-left: 3px solid #8b84ff;
+      padding-left: 12px;
+    }
+
     .note {
       font-style: italic;
       font-size: 12px;
@@ -47,9 +52,18 @@
       Teams has no keyboard shortcut for meeting chat, so the action brings the meeting
       window to the front and clicks its Chat button. Teams stays in front afterwards.
     </p>
+    <div class="permission">
+      <p><strong>Accessibility permission is required.</strong></p>
+      <ol>
+        <li>Open <strong>System Settings → Privacy &amp; Security → Accessibility</strong>.</li>
+        <li>Enable <strong>Stream Deck</strong>.</li>
+        <li>If it is already enabled, turn it off and on again, then restart Stream Deck.</li>
+      </ol>
+    </div>
     <p class="note">
-      Note: If no meeting is open, the button will display "No Meeting". If Teams is not
-      running, it will display "No Teams".
+      If permission is missing, the button displays "Allow Accessibility" and shows an
+      alert. If no meeting is open, it displays "No Meeting". If Teams is not running,
+      it displays "No Teams".
     </p>
   </div>
 </body>
