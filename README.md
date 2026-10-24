@@ -36,13 +36,15 @@ Chat Toggle has no Teams shortcut. It brings the meeting window to the front and
 
 If a Teams version does not expose stable identifiers, configure its localized fallback labels before Stream Deck starts. Values are comma-separated and matched from the start of the accessibility label:
 
+Quit Stream Deck first, then launch it with the variables:
+
 ```sh
-TEAMS_CHAT_LABELS="Unterhaltung anzeigen,Chat öffnen" \
-TEAMS_LEAVE_LABELS="Verlassen" \
-open -a "Elgato Stream Deck"
+open --env 'TEAMS_CHAT_LABELS=Unterhaltung anzeigen,Chat öffnen' \
+  --env 'TEAMS_LEAVE_LABELS=Verlassen' \
+  -a "Elgato Stream Deck"
 ```
 
-English labels are the default fallback. The remaining limitation is that an unrecognized localized label cannot be identified when Teams supplies no stable identifier. For detailed troubleshooting, start Stream Deck with `ELGATO_TEAMS_CHAT_DEBUG=1`; the log's `BUTTON` lines will then include control labels, help text, and identifiers. Those diagnostics may contain meeting information, so enable them only temporarily.
+English labels are the default fallback. The remaining limitation is that an unrecognized localized label cannot be identified when Teams supplies no stable identifier. For detailed troubleshooting, quit Stream Deck and relaunch it with `open --env ELGATO_TEAMS_CHAT_DEBUG=1 -a "Elgato Stream Deck"`; the log's `BUTTON` lines will then include control labels, help text, and identifiers. Those diagnostics may contain meeting information, so enable them only temporarily.
 
 ## Installation
 
