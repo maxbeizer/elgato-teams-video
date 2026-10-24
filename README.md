@@ -32,7 +32,7 @@ A Stream Deck plugin providing convenient Microsoft Teams meeting controls direc
 
 > **Note:** These are the default Teams keyboard shortcuts. If you've customized them, the plugin will not work correctly.
 
-Chat Toggle has no Teams shortcut. It brings the meeting window to the front and presses its chat control through the macOS accessibility API, and leaves Teams in front. It prefers Teams' language-neutral accessibility/DOM identifiers, so localized labels normally do not matter. Each press writes the controls it found to `com.max-beizer.elgato-teams-video.sdPlugin/logs/`, which helps diagnose Teams accessibility changes.
+Chat Toggle has no Teams shortcut. It brings the meeting window to the front and presses its chat control through the macOS accessibility API, and leaves Teams in front. It prefers Teams' language-neutral accessibility/DOM identifiers, so localized labels normally do not matter. Each press writes sanitized search summaries to `com.max-beizer.elgato-teams-video.sdPlugin/logs/`, which helps diagnose Teams accessibility changes without recording window titles or control labels.
 
 If a Teams version does not expose stable identifiers, configure its localized fallback labels before Stream Deck starts. Values are comma-separated and matched from the start of the accessibility label:
 
@@ -42,7 +42,7 @@ TEAMS_LEAVE_LABELS="Verlassen" \
 open -a "Elgato Stream Deck"
 ```
 
-English labels are the default fallback. The remaining limitation is that an unrecognized localized label cannot be identified when Teams supplies no stable identifier; the log's `BUTTON` lines show the label and `id=` value to configure or report.
+English labels are the default fallback. The remaining limitation is that an unrecognized localized label cannot be identified when Teams supplies no stable identifier. For detailed troubleshooting, start Stream Deck with `ELGATO_TEAMS_CHAT_DEBUG=1`; the log's `BUTTON` lines will then include control labels, help text, and identifiers. Those diagnostics may contain meeting information, so enable them only temporarily.
 
 ## Installation
 

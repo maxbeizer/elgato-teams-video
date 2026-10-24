@@ -29,5 +29,7 @@ test("escapes punctuation in configured labels", () => {
   );
 
   assert.match("Chat (Besprechung)", matchers.chatLabel);
+  assert.match("Chat (Besprechung) öffnen", matchers.chatLabel);
   assert.match("Beenden + verlassen", matchers.leaveLabel);
+  assert.match("Beenden + verlassen (⌘H)", matchers.leaveLabel);
 });

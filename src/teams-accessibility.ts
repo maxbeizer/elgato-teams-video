@@ -21,7 +21,10 @@ function escapeRegExp(value: string): string {
 }
 
 function labelMatcher(labels: string[]): RegExp {
-  return new RegExp(`^(?:${labels.map(escapeRegExp).join("|")})(?:\\b|$)`, "i");
+  return new RegExp(
+    `^(?:${labels.map(escapeRegExp).join("|")})(?=$|[^\\p{L}\\p{N}_])`,
+    "iu"
+  );
 }
 
 /**

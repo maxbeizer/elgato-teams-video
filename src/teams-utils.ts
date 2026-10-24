@@ -128,10 +128,10 @@ function meetingChatScript(pid: number, press: boolean, debug: boolean): string 
     const DEBUG = ${debug};
     const MAX_NODES = 20000;
     const BUTTON_ROLES = ["AXButton", "AXCheckBox", "AXRadioButton", "AXMenuButton", "AXPopUpButton", "AXTab"];
-    const CHAT_IDENTIFIER = new RegExp(${JSON.stringify(matchers.chatIdentifier.source)}, "i");
-    const LEAVE_IDENTIFIER = new RegExp(${JSON.stringify(matchers.leaveIdentifier.source)}, "i");
-    const CHAT_LABEL = new RegExp(${JSON.stringify(matchers.chatLabel.source)}, "i");
-    const LEAVE_LABEL = new RegExp(${JSON.stringify(matchers.leaveLabel.source)}, "i");
+    const CHAT_IDENTIFIER = new RegExp(${JSON.stringify(matchers.chatIdentifier.source)}, ${JSON.stringify(matchers.chatIdentifier.flags)});
+    const LEAVE_IDENTIFIER = new RegExp(${JSON.stringify(matchers.leaveIdentifier.source)}, ${JSON.stringify(matchers.leaveIdentifier.flags)});
+    const CHAT_LABEL = new RegExp(${JSON.stringify(matchers.chatLabel.source)}, ${JSON.stringify(matchers.chatLabel.flags)});
+    const LEAVE_LABEL = new RegExp(${JSON.stringify(matchers.leaveLabel.source)}, ${JSON.stringify(matchers.leaveLabel.flags)});
 
     function attr(el, name) {
       const ref = Ref();
