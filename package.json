@@ -1,6 +1,8 @@
 {
   "scripts": {
     "build": "rollup -c",
+    "test": "tsx --test test/**/*.test.ts",
+    "typecheck": "tsc --noEmit",
     "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.max-beizer.elgato-teams-video\""
   },
   "type": "module",
@@ -14,6 +16,7 @@
     "@types/node": "~20.15.0",
     "rollup": "^4.0.2",
     "tslib": "^2.6.2",
+    "tsx": "^4.23.15",
     "typescript": "^5.2.2"
   },
   "dependencies": {
