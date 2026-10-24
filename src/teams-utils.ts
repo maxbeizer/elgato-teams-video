@@ -92,10 +92,20 @@ export function sendTeamsKeystroke(
   execSync(script);
 }
 
+export type MeetingChatStatus =
+  | "clicked"
+  | "found"
+  | "no_teams"
+  | "permission_denied"
+  | "no_meeting"
+  | "no_chat"
+  | "ambiguous"
+  | "error"
+  | "unknown";
+
 /** Outcome of an attempt to find (and optionally press) the meeting Chat button */
 export interface MeetingChatResult {
-  /** "clicked", "found", "no_teams", "no_meeting", "no_chat", "ambiguous" or "error" */
-  status: string;
+  status: MeetingChatStatus;
   /** Diagnostic lines describing the windows and buttons that were inspected */
   details: string[];
 }
@@ -145,7 +155,9 @@ function meetingChatScript(pid: number, press: boolean): string {
       const out = [];
       const start = Date.now();
       const app = $.AXUIElementCreateApplication(PID);
-      out.push("TRUSTED|" + $.AXIsProcessTrusted());
+      const trusted = $.AXIsProcessTrusted();
+      out.push("TRUSTED|" + trusted);
+      if (!trusted) return out.concat("RESULT|permission_denied").join("\\n");
 
       // Chromium-based apps only build their web content tree for assistive clients
       $.AXUIElementSetAttributeValue(app, $("AXManualAccessibility"), $.kCFBooleanTrue);
@@ -244,9 +256,10 @@ export async function toggleMeetingChat(press = true): Promise<MeetingChatResult
     const output = await runJxa(meetingChatScript(pid, press), 10000);
     const lines = output.split("\n");
     const resultLine = lines.find((line) => line.startsWith("RESULT|"));
+    const status = (resultLine?.split("|")[1] ?? "unknown") as MeetingChatStatus;
 
     return {
-      status: resultLine ? resultLine.split("|")[1] : "unknown",
+      status,
       details: lines.filter((line) => !line.startsWith("RESULT|")),
     };
   } catch (error) {
