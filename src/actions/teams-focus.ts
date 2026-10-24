@@ -24,7 +24,7 @@ export class TeamsFocus extends SingletonAction<TeamsFocusSettings> {
   ): Promise<void> {
     try {
       const running = isTeamsRunning();
-      await ev.action.setTitle(running ? "Focus Teams" : "No Teams");
+      await ev.action.setTitle(running ? "Focus" : "No Teams");
       if ("setState" in ev.action) {
         await ev.action.setState(running ? 0 : 1);
       }
@@ -39,7 +39,7 @@ export class TeamsFocus extends SingletonAction<TeamsFocusSettings> {
   ): Promise<void> {
     try {
       const success = focusTeams();
-      await ev.action.setTitle(success ? "Focus Teams" : "No Teams");
+      await ev.action.setTitle(success ? "Focus" : "No Teams");
       if ("setState" in ev.action) {
         await ev.action.setState(success ? 0 : 1);
       }

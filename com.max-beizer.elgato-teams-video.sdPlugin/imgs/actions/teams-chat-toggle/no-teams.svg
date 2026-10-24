@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <rect width="72" height="72" rx="8" fill="#1a1a2e"/>
+  <!-- Speech bubble (greyed out) -->
+  <path d="M18 14 H54 Q58 14 58 18 V38 Q58 42 54 42 H32 L22 51 V42 H18 Q14 42 14 38 V18 Q14 14 18 14 Z" fill="#555"/>
+  <line x1="22" y1="24" x2="50" y2="24" stroke="#1a1a2e" stroke-width="3" stroke-linecap="round"/>
+  <line x1="22" y1="32" x2="42" y2="32" stroke="#1a1a2e" stroke-width="3" stroke-linecap="round"/>
+</svg>

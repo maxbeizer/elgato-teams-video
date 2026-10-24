@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+  <rect width="20" height="20" rx="3" fill="#6264A7"/>
+  <!-- Speech bubble -->
+  <path d="M4 5 H16 Q17 5 17 6 V12 Q17 13 16 13 H9 L6 16 V13 H4 Q3 13 3 12 V6 Q3 5 4 5 Z" fill="white"/>
+</svg>
